@@ -167,6 +167,8 @@ type Server struct {
 	SSLCiphers string `json:"sslCiphers,omitempty"`
 	// AuthTLSError contains the reason why the access to a server should be denied
 	AuthTLSError string `json:"authTLSError,omitempty"`
+	// Nickname contains the nickname of a server
+	Nickname string `json:"nickname,omitempty"`
 }
 
 // Location describes an URI inside a server.

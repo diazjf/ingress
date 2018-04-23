@@ -516,6 +516,9 @@ type Configuration struct {
 	// DisableLuaRestyWAF disables lua-resty-waf globally regardless
 	// of whether there's an ingress that has enabled the WAF using annotation
 	DisableLuaRestyWAF bool `json:"disable-lua-resty-waf"`
+
+	// Enables /hello on the default server
+	HelloKubeCon bool `json:"hello-kubecon"`
 }
 
 // NewDefault returns the default nginx configuration
@@ -626,6 +629,7 @@ func NewDefault() Configuration {
 		SyslogPort:                   514,
 		NoTLSRedirectLocations:       "/.well-known/acme-challenge",
 		NoAuthLocations:              "/.well-known/acme-challenge",
+		HelloKubeCon:                 false,
 	}
 
 	if glog.V(5) {
@@ -669,6 +673,7 @@ type TemplateConfig struct {
 	PublishService              *apiv1.Service
 	DynamicConfigurationEnabled bool
 	DisableLua                  bool
+	HelloKubeCon                bool
 }
 
 // ListenPorts describe the ports required to run the

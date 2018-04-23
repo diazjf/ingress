@@ -473,12 +473,19 @@ http {
 
     ## start server {{ $server.Hostname }}
     server {
+        {{ if $server.Nickname }}# server nickname {{ $server.Nickname }} {{ end }}
         server_name {{ $server.Hostname }} {{ $server.Alias }};
         {{ template "SERVER" serverConfig $all $server }}
 
         {{ if not (empty $cfg.ServerSnippet) }}
         # Custom code snippet configured in the configuration configmap
         {{ $cfg.ServerSnippet }}
+        {{ end }}
+
+        {{ if $all.Cfg.HelloKubeCon }}
+            location /hello {
+              return 200 "Hello from KubeCon Europe!";
+            }
         {{ end }}
 
         {{ template "CUSTOM_ERRORS" $all }}
@@ -503,6 +510,7 @@ http {
             access_log off;
             return 200;
         }
+
         {{ if not $all.DisableLua }}
         location /is-dynamic-lb-initialized {
             {{ if $cfg.EnableOpentracing }}

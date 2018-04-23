@@ -1,0 +1,87 @@
+# Obtain a clean Minikube instance
+minikube status
+minikube delete
+minikube start
+
+# Enable Ingress Addon
+minikube addons enable ingress
+
+# Disable Addon-Manager
+minikube addons disable addon-manager
+
+# Use the Docker Daemon
+eval $(minikube docker-env)
+
+# clone required repo into your gopath
+git clone https://github.com/diazjf/ingress.git -b hello-kubecon
+
+# Setup Require Environment Variables
+cd Desktop/go-stuff-community/src/k8s.io/ingress-nginx/
+export GOPATH=/Users/fernandodiaz/Desktop/go-stuff-community
+export DOCKER=docker
+export REGISTRY=index.docker.io/hello
+
+# Build and Verify Image
+make clean
+TAG=1.0 make docker-build
+docker images
+
+# Verify pods exist
+kubectl get pods -n kube-system
+
+# Show whats in the pod
+kubectl describe pod <nginx-ingress-controller> -n kube-system
+
+# Update Image to hello/nginx-ingress-controller:1.0
+kubectl edit rc nginx-ingress-controller -n kube-system
+
+# Delete pods if necessary
+
+# Verify pods exist
+kubectl get pods -n kube-system
+
+# Show whats in the pod
+kubectl describe pod <nginx-ingress-controller> -n kube-system
+
+# Add echo server deployment and expose service
+kubectl run echoserver --image=gcr.io/google_containers/echoserver:1.4 --port=8080
+kubectl expose deployment echoserver --type=NodePort
+
+# Show Ingress Resource
+cat annotation.yaml
+
+# Add hello.com to /etc/hosts
+echo "$(minikube ip) hello.com” | sudo tee -a /etc/hosts
+
+# show that paths don’t work
+curl hello.com/echo
+curl hello.com/hello
+
+# Apply the Ingress Resource
+kubectl apply -f annotation.yaml
+
+# Show that echo works and not hello
+curl hello.com/echo
+curl hello.com/hello
+
+# Look at the nginx config
+kubectl get pods -n kube-system
+kubectl exec -it <nginx-ingress-controller> -n kube-system cat /etc/nginx/nginx.conf
+
+# Edit the configmap
+kubectl get cm -n kube-system
+kubectl edit cm nginx-load-balancer-conf -n kube-system
+
+# Add the following to the configmap
+# hello-kubecon: “True”
+
+# Show the nginx config
+kubectl get pods -n kube-system
+kubectl exec -it <nginx-ingress-controller> -n kube-system cat /etc/nginx/nginx.conf
+
+# Get the NodePort
+minikube service list
+
+# Verify kubecon endpoint exists
+curl hello.com/echo
+curl hello.com/hello

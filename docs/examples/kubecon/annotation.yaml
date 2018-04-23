@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubecon
+  annotations:
+    nginx.ingress.kubernetes.io/nickname: "Wooohoooooo we're here!!!"
+spec:
+  rules:
+  - host: hello.com
+    http:
+      paths:
+      - path: /echo
+        backend:
+          serviceName: echoserver
+          servicePort: 8080
