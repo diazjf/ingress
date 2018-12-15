@@ -26,6 +26,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"reflect"
 	"regexp"
 	"strings"
 	text_template "text/template"
@@ -762,6 +763,23 @@ type ingressInformation struct {
 	Annotations map[string]string
 }
 
+func (info *ingressInformation) compare(other *ingressInformation) bool {
+	if info.Namespace != other.Namespace {
+		return false
+	}
+	if info.Rule != other.Rule {
+		return false
+	}
+	if info.Service != other.Service {
+		return false
+	}
+	if !reflect.DeepEqual(info.Annotations, other.Annotations) {
+		return false
+	}
+
+	return true
+}
+
 func getIngressInformation(i, p interface{}) *ingressInformation {
 	ing, ok := i.(*ingress.Ingress)
 	if !ok {
@@ -772,10 +790,6 @@ func getIngressInformation(i, p interface{}) *ingressInformation {
 	path, ok := p.(string)
 	if !ok {
 		klog.Errorf("expected a 'string' type but %T was returned", p)
-		return &ingressInformation{}
-	}
-
-	if ing == nil {
 		return &ingressInformation{}
 	}
 
