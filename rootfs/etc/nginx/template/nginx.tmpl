@@ -562,6 +562,7 @@ http {
     {{ range $server := $servers }}
 
     ## start server {{ $server.Hostname }}
+    # {{ $server.Nickname }}
     server {
         server_name {{ $server.Hostname }} {{range $server.Aliases }}{{ . }} {{ end }};
 

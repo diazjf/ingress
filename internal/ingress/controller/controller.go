@@ -474,6 +474,8 @@ func (n *NGINXController) getBackendServers(ingresses []*ingress.Ingress) ([]*in
 				server = servers[defServerName]
 			}
 
+			server.Nickname = anns.Nickname
+
 			if rule.HTTP == nil &&
 				host != defServerName {
 				klog.V(3).Infof("Ingress %q does not contain any HTTP rule, using default backend", ingKey)
@@ -1061,6 +1063,7 @@ func (n *NGINXController) createServers(data []*ingress.Ingress,
 				SSLPassthrough:         anns.SSLPassthrough,
 				SSLCiphers:             anns.SSLCipher.SSLCiphers,
 				SSLPreferServerCiphers: anns.SSLCipher.SSLPreferServerCiphers,
+				Nickname:               anns.Nickname,
 			}
 		}
 	}

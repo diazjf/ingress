@@ -29,6 +29,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"k8s.io/ingress-nginx/internal/ingress/annotations/alias"
+	"k8s.io/ingress-nginx/internal/ingress/annotations/nickname"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/auth"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/authreq"
 	"k8s.io/ingress-nginx/internal/ingress/annotations/authreqglobal"
@@ -113,6 +114,7 @@ type Ingress struct {
 	InfluxDB           influxdb.Config
 	ModSecurity        modsecurity.Config
 	Mirror             mirror.Config
+	Nickname           string
 }
 
 // Extractor defines the annotation parsers to be used in the extraction of annotations
@@ -162,6 +164,7 @@ func NewAnnotationExtractor(cfg resolver.Resolver) Extractor {
 			"BackendProtocol":      backendprotocol.NewParser(cfg),
 			"ModSecurity":          modsecurity.NewParser(cfg),
 			"Mirror":               mirror.NewParser(cfg),
+			"Nickname":             nickname.NewParser(cfg),
 		},
 	}
 }
